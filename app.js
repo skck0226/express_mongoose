@@ -1,4 +1,5 @@
 //Load packages
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -16,16 +17,14 @@ const port = process.env.PORT || 3000;
 
 app.use('/api/books',indexRouter);
 
-app.listen(port,(req,res)=>{
-	console.log(`${port} hello`);
-});
 
 // CONNECT TO MONGODB SERVER
+mongoose.Promise = global.Promise;
 const db = mongoose.connection;
+mongoose.connect(process.env.MONGO_URI)
+	.then(()=>console.log('mongodb connected'))
+	.catch((err)=>console.error(err));
 
-db.on('error',console.error);
-db.once('open', ()=>{
-	console.log('Connected to mongoDB');
+app.listen(port,(req,res)=>{
+	console.log(`server on : ${port}`);
 });
-
-mongoose.connect('mongodb://localhost/tutorial');
